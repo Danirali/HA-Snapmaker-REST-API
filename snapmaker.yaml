@@ -1,0 +1,12 @@
+# Update your configuration.yaml with the following lines
+rest:
+  - resource: "http://<SNAPMAKER_IP_ADDR>:8080/api/v1/status?<API_TOKEN>"
+    sensor:
+      - name: "Nozzle Temp"
+        value_template: "{{ value_json.nozzleTemperature }}"
+
+      - name: "Printer Status"
+        value_template: "{{ value_json.printStatus }}"
+
+      - name: "Filament Finished"
+        value_template: "{{ value_json.isFilamentOut }}"
