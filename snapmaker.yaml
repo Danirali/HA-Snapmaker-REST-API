@@ -1,12 +1,29 @@
-# Update your configuration.yaml with the following lines
-rest:
-  - resource: "http://<SNAPMAKER_IP_ADDR>:8080/api/v1/status?<API_TOKEN>"
-    sensor:
-      - name: "Nozzle Temp"
-        value_template: "{{ value_json.nozzleTemperature }}"
+# Update your configuration.yaml with the following code
 
-      - name: "Printer Status"
-        value_template: "{{ value_json.printStatus }}"
+variables:
+  snapmaker_ip: "192.168.10.7"
 
-      - name: "Filament Finished"
-        value_template: "{{ value_json.isFilamentOut }}"
+rest_command:
+  snapmaker_connect:
+    url: 'http://{{ snapmaker_ip }}:8080/api/v1/connect'
+    method: 'post'
+    content_type: 'application/json'
+    name: 'Connect to Snapmaker'
+
+sensor:
+  - platform: rest
+    name: Snapmaker API Token
+    json_attributes:
+      - token
+    value_template: "{{ value_json.token }}"
+    resource: "http://localhost:8123/api/rest_command/snapmaker_connect"
+    method: POST
+    headers:
+      content-type: application/json
+  - platform: rest
+    name: Snapmaker Status
+    resource: "http://{{ snapmaker_ip }}:8080/api/v1/status"
+    method: GET
+    json_attributes:
+      - nozzleTemperature
+      - printStatus
